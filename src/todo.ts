@@ -25,7 +25,7 @@ export class Todo {
     readonly done: boolean
   ) {}
 
-  private static fromRaw(raw: TodoRaw) {
+  static fromRaw(raw: TodoRaw) {
     return new Todo(raw.id as TodoId, raw.title, raw.description, raw.done);
   }
 

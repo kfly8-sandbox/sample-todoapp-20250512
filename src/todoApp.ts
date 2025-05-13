@@ -4,6 +4,7 @@ import type { Result } from 'neverthrow';
 import { Todo } from './todo';
 
 export interface TodoRepository {
+  getAll(): Promise<Result<Todo[], Error>>
   add(todo: Todo): Promise<Result<void, Error>>
 }
 
@@ -24,6 +25,10 @@ export class TodoApp {
     }
 
     return ok(result.value);
+  }
+
+  async getTodos() {
+    return await this.todoRepository.getAll();
   }
 }
 

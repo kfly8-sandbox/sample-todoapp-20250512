@@ -18,4 +18,9 @@ export class TodoRepositoryImpl implements TodoRepository {
 
     return ok()
   }
+
+  async getAll() {
+    const rows = await this.db.select().from(todos)
+    return ok(rows.map((row) => Todo.fromRaw(row)))
+  }
 }

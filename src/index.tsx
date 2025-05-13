@@ -22,6 +22,17 @@ app.get('/', (c) => {
   return c.render(<h1>Hello!</h1>)
 })
 
+app.get('/api/todos', async (c) => {
+  const todoApp = newTodoApp(c)
+
+  const result = await todoApp.getTodos()
+  if (result.isErr()) {
+    return c.json({ error: result.error.message }, 500)
+  }
+
+  return c.json(result.value)
+})
+
 app.post('/api/todos', async (c) => {
   const todoApp = newTodoApp(c)
 
@@ -29,7 +40,6 @@ app.post('/api/todos', async (c) => {
 
   const result = await todoApp.addTodo(title, description)
   if (result.isErr()) {
-    console.log(result.error)
     return c.json({ error: result.error.message }, 400)
   }
 
