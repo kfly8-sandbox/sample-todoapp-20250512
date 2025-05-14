@@ -7,13 +7,13 @@
   "assets": {
     "directory": "./dist"
   },
-  "observability": {
-    "enabled": true,
-    "head_sampling_rate": 1
-  },
   "env": {
     "production": {
-      "name": "sample-todoapp-20250512-production"
+      "name": "sample-todoapp-20250512-production",
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1
+      }
     }
   }
 }
