@@ -5,7 +5,7 @@ export const renderer = jsxRenderer(({ children }) => {
     <html>
       <head>
         <link
-          href={import.meta.env.PROD ? `/assets/style.css` : `/src/style.css`}
+          href={process.env.NODE_ENV === 'production' ? `/assets/style.css` : `/src/style.css`}
           rel="stylesheet"
         />
       </head>
