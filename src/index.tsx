@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import type { Context } from 'hono'
 import { env } from 'hono/adapter'
 import { renderer } from './renderer'
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/neon-http';
 
 import { TodoRepositoryImpl } from './todoRepository'
 import { TodoApp } from './todoApp'

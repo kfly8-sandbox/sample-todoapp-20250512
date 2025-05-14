@@ -4,9 +4,10 @@ import { Todo } from './todo';
 import { todos } from './schema';
 
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import type { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 
 export class TodoRepositoryImpl implements TodoRepository {
-  constructor(private db: NodePgDatabase) { }
+  constructor(private db: NodePgDatabase | NeonHttpDatabase) { }
 
   async add(todo: Todo) {
     await this.db.insert(todos).values({
