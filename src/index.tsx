@@ -18,14 +18,11 @@ app.get('/api/todos', async (c) => {
   const repo = new TodoRepositoryImpl(db)
   const todoApp = new TodoApp(repo)
 
-  db.$client.connect()
   const result = await todoApp.getTodos()
-  c.executionCtx.waitUntil(db.$client.end())
 
   if (result.isErr()) {
     return c.json({ error: result.error.message }, 500)
   }
-
 
   return c.json(result.value)
 })
@@ -35,9 +32,7 @@ app.post('/api/todos', async (c) => {
   const repo = new TodoRepositoryImpl(db)
   const todoApp = new TodoApp(repo)
 
-  db.$client.connect()
   const { title, description } = await c.req.json()
-  c.executionCtx.waitUntil(db.$client.end())
 
   const result = await todoApp.addTodo(title, description)
   if (result.isErr()) {
