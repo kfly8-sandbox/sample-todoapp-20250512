@@ -1,21 +1,11 @@
 import { Hono } from 'hono'
-import type { Context } from 'hono'
-import { env } from 'hono/adapter'
 import { renderer } from './renderer'
-import { Client } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
 
+import { createDatabase } from './helper'
 import { TodoRepositoryImpl } from './todoRepository'
 import { TodoApp } from './todoApp'
 
 const app = new Hono()
-
-const connectDatabase = async (c: Context) => {
-  const { DATABASE_URL } = env<{ DATABASE_URL: string }>(c)
-  const client = new Client(DATABASE_URL);
-  await client.connect();
-  return client;
-}
 
 app.use(renderer)
 
@@ -24,35 +14,35 @@ app.get('/', (c) => {
 })
 
 app.get('/api/todos', async (c) => {
-  const client = await connectDatabase(c)
-  const db = drizzle({ client })
+  const db = createDatabase(c)
   const repo = new TodoRepositoryImpl(db)
   const todoApp = new TodoApp(repo)
 
+  db.$client.connect()
   const result = await todoApp.getTodos()
+  c.executionCtx.waitUntil(db.$client.end())
+
   if (result.isErr()) {
     return c.json({ error: result.error.message }, 500)
   }
 
-  c.executionCtx.waitUntil(client.end())
 
   return c.json(result.value)
 })
 
 app.post('/api/todos', async (c) => {
-  const client = await connectDatabase(c)
-  const db = drizzle({ client })
+  const db = createDatabase(c)
   const repo = new TodoRepositoryImpl(db)
   const todoApp = new TodoApp(repo)
 
+  db.$client.connect()
   const { title, description } = await c.req.json()
+  c.executionCtx.waitUntil(db.$client.end())
 
   const result = await todoApp.addTodo(title, description)
   if (result.isErr()) {
     return c.json({ error: result.error.message }, 400)
   }
-
-  c.executionCtx.waitUntil(client.end())
 
   return c.json(result.value)
 })
